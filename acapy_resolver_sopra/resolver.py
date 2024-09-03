@@ -14,18 +14,13 @@ from aries_cloudagent.resolver.base import (
 )
 from pydid import DID
 
-# Load environment variables from .env file
-load_dotenv()
 
 class SopraResolver(BaseDIDResolver):
     """Sopra Resolver."""
 
     def __init__(self):
         super().__init__(ResolverType.NATIVE)
-        # Load the regex pattern from the environment variable
-        self._supported_did_regex = re.compile(os.getenv("SOPRA_DID_REGEX"))
-        # Load the URL pattern from the environment variable
-        self.url_pattern = os.getenv("SOPRA_DID_URL_PATTERN")
+        self._supported_did_regex = re.compile("^did:indy:sopra.*$")
 
     @property
     def supported_did_regex(self) -> Pattern:
@@ -38,10 +33,10 @@ class SopraResolver(BaseDIDResolver):
     async def _resolve(self, profile: Profile, did: str) -> dict:
         """Resolve Sopra DIDs."""
         as_did = DID(did)
-        # Construct the URL using the DID and the pattern from .env
-        url = f"{self.url_pattern}{as_did.did}"
         async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
+            async with session.get(
+                f"https://9397-202-54-252-200.ngrok-free.app/1.0/identifiers/{as_did.method_specific_id}"
+            ) as response:
                 if response.status == 200:
                     try:
                         return json.loads(await response.text())
