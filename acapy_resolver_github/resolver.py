@@ -1,8 +1,8 @@
+"""Github Resolver."""
+
 import json
 import re
-import os
 from typing import Pattern
-from dotenv import load_dotenv
 
 import aiohttp
 from aries_cloudagent.core.profile import Profile
@@ -15,8 +15,8 @@ from aries_cloudagent.resolver.base import (
 from pydid import DID
 
 
-class SopraResolver(BaseDIDResolver):
-    """Sopra Resolver."""
+class GithubResolver(BaseDIDResolver):
+    """Github Resolver."""
 
     def __init__(self):
         super().__init__(ResolverType.NATIVE)
@@ -28,10 +28,10 @@ class SopraResolver(BaseDIDResolver):
         return self._supported_did_regex
 
     async def setup(self, context):
-        """Setup the Sopra resolver (none required)."""
+        """Setup the github resolver (none required)."""
 
     async def _resolve(self, profile: Profile, did: str) -> dict:
-        """Resolve Sopra DIDs."""
+        """Resolve github DIDs."""
         as_did = DID(did)
         async with aiohttp.ClientSession() as session:
             async with session.get(
